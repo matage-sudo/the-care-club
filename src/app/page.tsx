@@ -3,7 +3,7 @@ import Link from "next/link";
 import Image from "next/image";
 import BackgroundSlideshow from "@/components/BackgroundSlideshow";
 import { supabase } from "@/utils/supabase";
-
+export const dynamic = 'force-dynamic';
 export default async function HomePage() {
   // Fetch the 3 most recent events
   const { data: events } = await supabase
