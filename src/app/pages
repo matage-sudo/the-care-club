@@ -1,0 +1,51 @@
+import Link from "next/link";
+import { Heart, Users, CheckCircle, Globe } from "lucide-react";
+
+export default function HomePage() {
+  return (
+    <div className="flex flex-col min-h-screen">
+      {/* Hero Section */}
+      <section className="relative h-[80vh] flex items-center justify-center text-white bg-slate-900">
+        <div className="absolute inset-0 bg-slate-900/60 z-10" />
+        <div className="absolute inset-0 bg-[url('https://images.unsplash.com/photo-1593113630400-ea42888224e7')] bg-cover bg-center" />
+        
+        <div className="relative z-20 max-w-4xl mx-auto px-4 text-center">
+          <h1 className="text-6xl font-extrabold mb-6">Small Actions, <span className="text-rose-500">Massive Impact</span></h1>
+          <div className="flex justify-center gap-4">
+            <Link href="/donate" className="bg-rose-600 px-8 py-4 rounded-full font-bold hover:bg-rose-700">Donate Now</Link>
+            <Link href="/volunteer" className="bg-white text-slate-900 px-8 py-4 rounded-full font-bold hover:bg-slate-100">Join as Volunteer</Link>
+          </div>
+        </div>
+      </section>
+
+      {/* Features Section */}
+      <section className="py-20 bg-white">
+        <div className="max-w-7xl mx-auto px-4 grid md:grid-cols-3 gap-8">
+          {[
+            { icon: Globe, title: "Global Reach", desc: "Supporting communities worldwide." },
+            { icon: Heart, title: "Pure Charity", desc: "100% of donations reach the cause." },
+            { icon: CheckCircle, title: "Verified Impact", desc: "Transparent reporting on every project." }
+          ].map((item, i) => (
+            <div key={i} className="p-8 border rounded-3xl text-center space-y-4">
+              <item.icon className="w-12 h-12 text-rose-600 mx-auto" />
+              <h3 className="text-xl font-bold">{item.title}</h3>
+              <p className="text-slate-600">{item.desc}</p>
+            </div>
+          ))}
+        </div>
+      </section>
+
+      {/* Newsletter Subscription */}
+      <section className="py-20 bg-slate-50">
+        <div className="max-w-3xl mx-auto px-4 text-center">
+          <h2 className="text-3xl font-bold mb-4">Stay Updated</h2>
+          <p className="mb-8 text-slate-600">Join our newsletter for the latest impact stories[cite: 328].</p>
+          <form className="flex flex-col sm:flex-row gap-4">
+            <input type="email" placeholder="Enter your email" className="flex-grow px-6 py-4 rounded-full border" required />
+            <button className="px-8 py-4 bg-rose-600 text-white rounded-full font-bold hover:bg-rose-700">Subscribe [cite: 330]</button>
+          </form>
+        </div>
+      </section>
+    </div>
+  );
+}
