@@ -1,6 +1,6 @@
 "use client";
 import { useState } from "react";
-import { CheckCircle2, Baby, BookOpen, Droplets, Users, BrainCircuit, Mic, Home, ShieldCheck } from "lucide-react";
+import { CheckCircle2, Baby, BookOpen, Droplets, Users, BrainCircuit, Mic, Home, ShieldCheck, XCircle, Clock } from "lucide-react";
 import { supabase } from "@/lib/supabase";
 
 const SectionHeader = ({ title, desc }: { title: string, desc?: string }) => (
@@ -23,7 +23,7 @@ export default function VolunteerPage() {
   });
 
   const TILL_NUMBER = "9707077";
-  const WHATSAPP_LINK = "https://chat.whatsapp.com/CWJpgiDHDLp8QHsc0OcAUQ";
+  const WHATSAPP_LINK = "https://chat.whatsapp.com/IWrj0nCUp00LELkuqrPtv8";
 
   function validateStep1() {
     if (!formData.full_name || !formData.phone || !formData.location || !formData.expectations) {
@@ -51,6 +51,9 @@ export default function VolunteerPage() {
         const { data: updated } = await supabase.from("volunteers").select("status").eq("id", volunteerId).single();
         if (updated?.status === "accepted") {
           setStatus("accepted");
+          clearInterval(interval);
+        } else if (updated?.status === "rejected") {
+          setStatus("rejected");
           clearInterval(interval);
         }
       }, 5000);
@@ -80,8 +83,8 @@ export default function VolunteerPage() {
       {/* Hero Quote Section */}
       <section className="py-16 md:py-24 text-center px-4 bg-white border-b">
         <blockquote className="italic text-xl md:text-2xl text-slate-700 max-w-3xl mx-auto mb-8 font-serif px-2">
-  &ldquo;I slept &amp; dreamt that life is all joy. I woke &amp; saw that life is all service.&rdquo;
-</blockquote>
+          &ldquo;I slept &amp; dreamt that life is all joy. I woke &amp; saw that life is all service.&rdquo;
+        </blockquote>
       </section>
 
       {/* Service Areas Section */}
@@ -102,76 +105,89 @@ export default function VolunteerPage() {
       <section className="max-w-xl mx-auto py-12 md:py-16 px-4">
         <div className="bg-white p-6 sm:p-8 rounded-3xl shadow-xl border-t-4 border-rose-600">
           {submitted ? (
-            <div className="text-center py-10">
-              <CheckCircle2 className="w-16 h-16 text-green-500 mx-auto mb-4" />
-              {status === "pending" ? (
+            <div className="text-center py-10 space-y-4">
+              {status === "accepted" ? (
                 <>
-                  <h2 className="text-2xl font-bold mb-4">Registration Received</h2>
-                  <p className="text-slate-600 text-sm md:text-base">Please wait for admin confirmation to join our WhatsApp group.</p>
+                  <CheckCircle2 className="w-16 h-16 text-emerald-500 mx-auto mb-4" />
+                  <h2 className="text-2xl font-bold mb-2 text-slate-900">Registration Accepted!</h2>
+                  <p className="text-slate-600 text-sm md:text-base mb-4">You have been successfully verified. Click below to join the Care Club WhatsApp group.</p>
+                  <a
+                    href={WHATSAPP_LINK}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="inline-block w-full py-3 px-6 bg-emerald-600 hover:bg-emerald-500 text-white font-bold rounded-xl transition shadow-lg shadow-emerald-600/20"
+                  >
+                    Click here to join our WhatsApp group
+                  </a>
+                </>
+              ) : status === "rejected" ? (
+                <>
+                  <XCircle className="w-16 h-16 text-rose-500 mx-auto mb-4" />
+                  <h2 className="text-2xl font-bold mb-2 text-slate-900">Application Not Successful</h2>
+                  <p className="text-slate-600 text-sm md:text-base">We regret to inform you that your volunteer application was not successful at this time.</p>
                 </>
               ) : (
                 <>
-                  <h2 className="text-2xl font-bold mb-4">Application Accepted!</h2>
-                  <a href={WHATSAPP_LINK} target="_blank" className="text-blue-600 font-bold underline break-all">
-                    Click to join the Care Club WhatsApp group
-                  </a>
+                  <Clock className="w-16 h-16 text-amber-500 mx-auto mb-4 animate-spin" />
+                  <h2 className="text-2xl font-bold mb-2 text-slate-900">Registration Received</h2>
+                  <p className="text-slate-600 text-sm md:text-base">Please wait for admin confirmation to join our WhatsApp group.</p>
                 </>
               )}
             </div>
           ) : step === 1 ? (
             <div className="space-y-4">
-              <h2 className="text-2xl font-bold mb-6">Registration</h2>
-              
-              <input 
-                required 
-                placeholder="Full Name" 
-                className="w-full p-3 border rounded-lg text-sm md:text-base" 
+              <h2 className="text-2xl font-bold mb-6 text-slate-900">Registration</h2>
+
+              <input
+                required
+                placeholder="Full Name"
+                className="w-full p-3 border rounded-lg text-sm md:text-base text-slate-900"
                 value={formData.full_name}
-                onChange={e => setFormData({ ...formData, full_name: e.target.value })} 
+                onChange={e => setFormData({ ...formData, full_name: e.target.value })}
               />
-              
+
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                <input 
-                  required 
-                  placeholder="Phone" 
-                  className="w-full p-3 border rounded-lg text-sm md:text-base" 
+                <input
+                  required
+                  placeholder="Phone"
+                  className="w-full p-3 border rounded-lg text-sm md:text-base text-slate-900"
                   value={formData.phone}
-                  onChange={e => setFormData({ ...formData, phone: e.target.value })} 
+                  onChange={e => setFormData({ ...formData, phone: e.target.value })}
                 />
-                <input 
-                  required 
-                  placeholder="Location" 
-                  className="w-full p-3 border rounded-lg text-sm md:text-base" 
+                <input
+                  required
+                  placeholder="Location"
+                  className="w-full p-3 border rounded-lg text-sm md:text-base text-slate-900"
                   value={formData.location}
-                  onChange={e => setFormData({ ...formData, location: e.target.value })} 
+                  onChange={e => setFormData({ ...formData, location: e.target.value })}
                 />
               </div>
 
-              <input 
-                placeholder="Skills" 
-                className="w-full p-3 border rounded-lg text-sm md:text-base" 
+              <input
+                placeholder="Skills"
+                className="w-full p-3 border rounded-lg text-sm md:text-base text-slate-900"
                 value={formData.skills}
-                onChange={e => setFormData({ ...formData, skills: e.target.value })} 
+                onChange={e => setFormData({ ...formData, skills: e.target.value })}
               />
-              
-              <input 
-                placeholder="Availability" 
-                className="w-full p-3 border rounded-lg text-sm md:text-base" 
+
+              <input
+                placeholder="Availability"
+                className="w-full p-3 border rounded-lg text-sm md:text-base text-slate-900"
                 value={formData.availability}
-                onChange={e => setFormData({ ...formData, availability: e.target.value })} 
+                onChange={e => setFormData({ ...formData, availability: e.target.value })}
               />
-              
-              <textarea 
-                placeholder="Expectations" 
-                required 
+
+              <textarea
+                placeholder="Expectations"
+                required
                 rows={4}
-                className="w-full p-3 border rounded-lg text-sm md:text-base" 
+                className="w-full p-3 border rounded-lg text-sm md:text-base text-slate-900"
                 value={formData.expectations}
-                onChange={e => setFormData({ ...formData, expectations: e.target.value })} 
+                onChange={e => setFormData({ ...formData, expectations: e.target.value })}
               />
-              
-              <button 
-                onClick={() => validateStep1() && setStep(2)} 
+
+              <button
+                onClick={() => validateStep1() && setStep(2)}
                 className="w-full bg-slate-900 text-white py-3 rounded-lg font-medium hover:bg-slate-800 transition"
               >
                 Proceed to Payment
@@ -179,19 +195,19 @@ export default function VolunteerPage() {
             </div>
           ) : (
             <div className="space-y-4">
-              <h2 className="text-2xl font-bold mb-6">Payment (1000 KES)</h2>
+              <h2 className="text-2xl font-bold mb-6 text-slate-900">Payment (1000 KES)</h2>
 
               {!paymentMethod && (
                 <div className="space-y-3">
-                  <button 
-                    onClick={() => { setPaymentMethod("stk"); setShowUnavailable(true); }} 
-                    className="w-full p-4 border-2 rounded-xl text-left font-medium hover:border-slate-900 transition"
+                  <button
+                    onClick={() => { setPaymentMethod("stk"); setShowUnavailable(true); }}
+                    className="w-full p-4 border-2 rounded-xl text-left font-medium hover:border-slate-900 transition text-slate-900"
                   >
                     M-Pesa STK Push (Automatic)
                   </button>
-                  <button 
-                    onClick={() => setPaymentMethod("till")} 
-                    className="w-full p-4 border-2 rounded-xl text-left font-medium hover:border-slate-900 transition"
+                  <button
+                    onClick={() => setPaymentMethod("till")}
+                    className="w-full p-4 border-2 rounded-xl text-left font-medium hover:border-slate-900 transition text-slate-900"
                   >
                     M-Pesa Till Number (Manual Code Entry)
                   </button>
@@ -203,13 +219,13 @@ export default function VolunteerPage() {
                   <p className="font-bold">Service currently unavailable.</p>
                   <p className="text-sm">Please use Till Number instead:</p>
                   <div className="flex flex-col sm:flex-row items-center justify-between bg-white p-3 border border-red-300 rounded-lg gap-2">
-                    <span className="font-mono font-bold text-lg">{TILL_NUMBER}</span>
+                    <span className="font-mono font-bold text-lg text-slate-900">{TILL_NUMBER}</span>
                     <button onClick={copyTill} className="w-full sm:w-auto bg-slate-800 text-white px-3 py-1.5 rounded text-sm font-medium">
                       Copy Till
                     </button>
                   </div>
-                  <button 
-                    onClick={() => { setShowUnavailable(false); setPaymentMethod("till"); }} 
+                  <button
+                    onClick={() => { setShowUnavailable(false); setPaymentMethod("till"); }}
                     className="w-full bg-red-600 text-white py-2 rounded-lg font-medium text-sm"
                   >
                     Switch to Till Number
@@ -223,15 +239,15 @@ export default function VolunteerPage() {
                   <button onClick={copyTill} className="w-full bg-slate-100 py-2.5 rounded-lg font-bold text-sm text-slate-800 border">
                     Copy Till Number
                   </button>
-                  <input 
-                    required 
-                    placeholder="Enter M-Pesa Confirmation Code" 
-                    className="w-full p-3 border rounded-lg text-sm md:text-base uppercase" 
+                  <input
+                    required
+                    placeholder="Enter M-Pesa Confirmation Code"
+                    className="w-full p-3 border rounded-lg text-sm md:text-base uppercase text-slate-900"
                     value={formData.mpesa_code}
                     onChange={e => setFormData({ ...formData, mpesa_code: e.target.value })}
                   />
-                  <button 
-                    onClick={handleSubmit} 
+                  <button
+                    onClick={handleSubmit}
                     disabled={loading}
                     className="w-full bg-green-600 text-white py-3 rounded-lg font-medium hover:bg-green-700 transition disabled:opacity-50"
                   >
@@ -240,8 +256,8 @@ export default function VolunteerPage() {
                 </div>
               )}
 
-              <button 
-                onClick={() => { setStep(1); setPaymentMethod(null); setShowUnavailable(false); }} 
+              <button
+                onClick={() => { setStep(1); setPaymentMethod(null); setShowUnavailable(false); }}
                 className="w-full bg-slate-200 text-slate-800 py-2.5 rounded-lg font-medium text-sm hover:bg-slate-300 transition mt-4"
               >
                 Back to Details

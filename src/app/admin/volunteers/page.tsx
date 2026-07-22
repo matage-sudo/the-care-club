@@ -1,7 +1,7 @@
 "use client";
 import { useState, useEffect } from "react";
 import { supabase } from "@/lib/supabase";
-import { Search, Trash2, CheckCircle, Clock } from "lucide-react";
+import { Search, Trash2, CheckCircle, Clock, XCircle } from "lucide-react";
 
 export default function VolunteersPage() {
   const [volunteers, setVolunteers] = useState<any[]>([]);
@@ -16,10 +16,59 @@ export default function VolunteersPage() {
     setVolunteers(data || []);
   }
 
+  async function handleAccept(volunteer: any) {
+    // 1. Insert into the members table (including skills, name, phone, location, email)
+    const { error: memberError } = await supabase
+      .from("members")
+      .insert([
+        {
+          full_name: volunteer.full_name,
+          phone: volunteer.phone,
+          location: volunteer.location,
+          email: volunteer.email || null,
+          skills: volunteer.skills || volunteer.skill || null,
+        },
+      ]);
+
+    if (memberError) {
+      alert("Failed to add to members: " + memberError.message);
+      return;
+    }
+
+    // 2. Update status to 'accepted' so the client sees the WhatsApp link
+    const { error: updateError } = await supabase
+      .from("volunteers")
+      .update({ status: "accepted" })
+      .eq("id", volunteer.id);
+
+    if (updateError) {
+      alert("Added to members, but failed to update status: " + updateError.message);
+      return;
+    }
+
+    alert(`Volunteer accepted, added as a member with skills, and client unlocked for WhatsApp!`);
+
+    // 3. Automatically delete from the volunteers table after giving the client time to detect 'accepted'
+    setTimeout(async () => {
+      await supabase.from("volunteers").delete().eq("id", volunteer.id);
+      fetchVolunteers();
+    }, 4000);
+
+    fetchVolunteers();
+  }
+
   async function handleDelete(id: any) {
-    const { error } = await supabase.from("volunteers").delete().eq("id", id);
-    if (error) alert("Delete failed: " + error.message);
-    else fetchVolunteers();
+    // Update status to 'rejected' so the client sees "Application not successful"
+    const { error } = await supabase
+      .from("volunteers")
+      .update({ status: "rejected" })
+      .eq("id", id);
+
+    if (error) {
+      alert("Update failed: " + error.message);
+    } else {
+      fetchVolunteers();
+    }
   }
 
   const filteredVolunteers = volunteers.filter((v) =>
@@ -63,17 +112,35 @@ export default function VolunteersPage() {
                     <td className="py-4 px-4 sm:px-6">{v.location}</td>
                     <td className="py-4 px-4 sm:px-6 font-mono text-rose-400">{v.mpesa_code || 'N/A'}</td>
                     <td className="py-4 px-4 sm:px-6">
-                      <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-bold bg-emerald-500/10 text-emerald-400 border border-emerald-500/20">
-                        <CheckCircle size={12} /> Accepted
-                      </span>
+                      {v.status === "accepted" ? (
+                        <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-bold bg-emerald-500/10 text-emerald-400 border border-emerald-500/20">
+                          <CheckCircle size={12} /> Accepted
+                        </span>
+                      ) : v.status === "rejected" ? (
+                        <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-bold bg-rose-500/10 text-rose-400 border border-rose-500/20">
+                          <XCircle size={12} /> Rejected
+                        </span>
+                      ) : (
+                        <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-bold bg-amber-500/10 text-amber-400 border border-amber-500/20">
+                          <Clock size={12} /> Pending
+                        </span>
+                      )}
                     </td>
-                    <td className="py-4 px-4 sm:px-6 text-right">
+                    <td className="py-4 px-4 sm:px-6 text-right space-x-2">
+                      {v.status !== "accepted" && v.status !== "rejected" && (
+                        <button
+                          onClick={() => handleAccept(v)}
+                          className="inline-flex items-center gap-1 text-emerald-400 hover:text-emerald-300 font-semibold px-3 py-1.5 rounded-xl bg-emerald-500/10 hover:bg-emerald-500/20 transition border border-emerald-500/20"
+                        >
+                          <CheckCircle size={14} /> Accept
+                        </button>
+                      )}
                       <button
                         onClick={() => handleDelete(v.id)}
                         className="inline-flex items-center gap-1 text-rose-400 hover:text-rose-300 font-semibold p-2 rounded-xl hover:bg-rose-500/10 transition border border-rose-500/20"
-                        title="Delete Volunteer"
+                        title="Reject Volunteer"
                       >
-                        <Trash2 size={16} /> Delete
+                        <Trash2 size={16} />
                       </button>
                     </td>
                   </tr>
