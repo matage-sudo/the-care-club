@@ -4,6 +4,8 @@ import Image from "next/image";
 import { supabase } from "@/utils/supabase";
 import { notFound } from "next/navigation";
 
+export const dynamic = 'force-dynamic';
+
 export default async function StoryDetailPage({ params }: { params: Promise<{ id: string }> }) {
   const resolvedParams = await params;
   
@@ -17,11 +19,12 @@ export default async function StoryDetailPage({ params }: { params: Promise<{ id
     notFound();
   }
 
-  const { data } = supabase.storage
-    .from("event-images")
-    .getPublicUrl(story.image_path || "");
-
-  const hasImage = story.image_path && story.image_path.trim() !== "";
+  let paths: string[] = [];
+  try {
+    paths = JSON.parse(story.image_path || "[]");
+  } catch {
+    if (story.image_path) paths = [story.image_path];
+  }
 
   return (
     <main className="min-h-screen bg-slate-950 text-white pb-24 pt-32 px-6">
@@ -37,14 +40,28 @@ export default async function StoryDetailPage({ params }: { params: Promise<{ id
 
         <h1 className="text-4xl md:text-5xl font-extrabold mb-8 leading-tight">{story.title}</h1>
 
-        {hasImage && (
-          <div className="relative w-full h-[400px] rounded-3xl overflow-hidden mb-10 bg-slate-900 border border-slate-800">
-            <Image
-              src={data.publicUrl}
-              alt={story.title}
-              fill
-              className="object-cover"
-            />
+        {/* Media Gallery Grid */}
+        {paths.length > 0 && (
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-10">
+            {paths.map((path, index) => {
+              const { data } = supabase.storage.from("event-images").getPublicUrl(path);
+              const isVideo = path.endsWith('.mp4') || path.endsWith('.webm') || path.endsWith('.mov');
+
+              return (
+                <div key={index} className={`relative w-full rounded-2xl overflow-hidden bg-slate-900 border border-slate-800 ${paths.length === 1 ? 'sm:col-span-2 h-[400px]' : 'h-64'}`}>
+                  {isVideo ? (
+                    <video controls src={data.publicUrl} className="w-full h-full object-cover" />
+                  ) : (
+                    <Image
+                      src={data.publicUrl}
+                      alt={`${story.title} - ${index + 1}`}
+                      fill
+                      className="object-cover"
+                    />
+                  )}
+                </div>
+              );
+            })}
           </div>
         )}
 

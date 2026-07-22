@@ -2,6 +2,8 @@ import { supabase } from "@/utils/supabase";
 import { Calendar, MapPin } from "lucide-react";
 import Image from "next/image";
 
+export const dynamic = 'force-dynamic';
+
 export const metadata = {
   title: "Events | The Care Club",
   description: "View our upcoming and past events.",

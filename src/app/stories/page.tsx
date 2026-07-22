@@ -3,6 +3,8 @@ import { ArrowRight, Calendar } from "lucide-react";
 import Image from "next/image";
 import { supabase } from "@/utils/supabase";
 
+export const dynamic = 'force-dynamic';
+
 export default async function StoriesPage() {
   const { data: stories, error } = await supabase
     .from("news")
@@ -26,11 +28,16 @@ export default async function StoriesPage() {
         <div className="grid md:grid-cols-3 gap-8">
           {stories && stories.length > 0 ? (
             stories.map((story) => {
-              const { data } = supabase.storage
-                .from("event-images")
-                .getPublicUrl(story.image_path || "");
+              let paths: string[] = [];
+              try {
+                paths = JSON.parse(story.image_path || "[]");
+              } catch {
+                if (story.image_path) paths = [story.image_path];
+              }
 
-              const hasImage = story.image_path && story.image_path.trim() !== "";
+              const coverPath = paths.length > 0 ? paths[0] : "";
+              const { data } = supabase.storage.from("event-images").getPublicUrl(coverPath);
+              const hasImage = coverPath.trim() !== "";
 
               return (
                 <div 

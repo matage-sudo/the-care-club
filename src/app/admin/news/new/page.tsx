@@ -13,7 +13,7 @@ export default function NewNewsAdminPage() {
   const [eventDate, setEventDate] = useState('');
   const [place, setPlace] = useState('');
   const [content, setContent] = useState('');
-  const [file, setFile] = useState<File | null>(null);
+  const [files, setFiles] = useState<FileList | null>(null);
   const [errorMsg, setErrorMsg] = useState('');
 
   async function handleSubmit(e: React.FormEvent) {
@@ -22,19 +22,22 @@ export default function NewNewsAdminPage() {
     setErrorMsg('');
 
     try {
-      let imagePath = '';
+      let imagePaths: string[] = [];
 
-      if (file) {
-        const fileExt = file.name.split('.').pop();
-        const fileName = `${Math.random()}.${fileExt}`;
-        const filePath = `${fileName}`;
+      if (files && files.length > 0) {
+        for (let i = 0; i < files.length; i++) {
+          const file = files[i];
+          const fileExt = file.name.split('.').pop();
+          const fileName = `${Math.random()}.${fileExt}`;
+          const filePath = `${fileName}`;
 
-        const { error: uploadError } = await supabase.storage
-          .from('event-images')
-          .upload(filePath, file);
+          const { error: uploadError } = await supabase.storage
+            .from('event-images')
+            .upload(filePath, file);
 
-        if (uploadError) throw uploadError;
-        imagePath = filePath;
+          if (uploadError) throw uploadError;
+          imagePaths.push(filePath);
+        }
       }
 
       const { error: insertError } = await supabase
@@ -45,7 +48,7 @@ export default function NewNewsAdminPage() {
             event_date: eventDate,
             place,
             content,
-            image_path: imagePath,
+            image_path: JSON.stringify(imagePaths), // Store multiple file paths as a JSON string
           },
         ]);
 
@@ -67,7 +70,7 @@ export default function NewNewsAdminPage() {
         </Link>
 
         <h1 className="text-3xl font-black mb-2 text-white">Add New Story / Update</h1>
-        <p className="text-slate-400 text-sm mb-8">Publish pictures, videos, and comments for community events visible to clients.</p>
+        <p className="text-slate-400 text-sm mb-8">Publish multiple pictures, videos, and comments for community events visible to clients.</p>
 
         {errorMsg && (
           <div className="bg-rose-500/10 border border-rose-500/20 text-rose-400 p-4 rounded-xl mb-6 text-sm">
@@ -121,12 +124,13 @@ export default function NewNewsAdminPage() {
 
           <div>
             <label className="block text-xs font-semibold uppercase tracking-wider text-slate-300 mb-2 flex items-center gap-2">
-              <ImageIcon size={14} className="text-rose-500" /> Media File (Picture / Video)
+              <ImageIcon size={14} className="text-rose-500" /> Media Files (Select Multiple Pictures/Videos)
             </label>
             <input
               type="file"
+              multiple
               accept="image/*,video/*"
-              onChange={(e) => setFile(e.target.files?.[0] || null)}
+              onChange={(e) => setFiles(e.target.files)}
               className="w-full bg-slate-950 border border-slate-800 rounded-xl px-4 py-3 text-slate-400 file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border-0 file:text-sm file:font-semibold file:bg-rose-600 file:text-white hover:file:bg-rose-700 transition-all cursor-pointer"
             />
           </div>
