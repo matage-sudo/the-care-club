@@ -29,7 +29,7 @@ const EventCard = ({ event }: { event: any }) => (
         </div>
         <div className="flex items-center text-slate-500 text-sm font-medium">
           <MapPin className="h-4 w-4 mr-2 text-rose-500" />
-          {event.location}
+          {event.place}
         </div>
       </div>
       <p className="text-slate-700 leading-relaxed" style={{ fontFamily: '"Times New Roman", Times, serif' }}>

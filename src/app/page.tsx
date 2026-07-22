@@ -92,10 +92,10 @@ export default async function HomePage() {
                         <Calendar size={15} className="text-rose-400 shrink-0" />
                         <span>{new Date(event.event_date).toLocaleDateString()}</span>
                       </div>
-                      {event.location && (
+                      {event.place && (
                         <div className="flex items-center gap-2">
                           <MapPin size={15} className="text-indigo-400 shrink-0" />
-                          <span>{event.location}</span>
+                          <span>{event.place}</span>
                         </div>
                       )}
                     </div>
