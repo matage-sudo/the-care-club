@@ -22,11 +22,25 @@ async function handleSignOut(request: NextRequest) {
     }
   );
 
+  // Sign out from Supabase server session
   await supabase.auth.signOut();
 
-  return NextResponse.redirect(new URL("/login", request.url), {
+  // Create redirect response
+  const response = NextResponse.redirect(new URL("/login", request.url), {
     status: 302,
   });
+
+  // Explicitly clear all cookies starting with 'sb-' (Supabase cookies)
+  cookieStore.getAll().forEach((cookie) => {
+    if (cookie.name.startsWith("sb-")) {
+      response.cookies.set(cookie.name, "", {
+        maxAge: 0,
+        path: "/",
+      });
+    }
+  });
+
+  return response;
 }
 
 export async function POST(request: NextRequest) {
