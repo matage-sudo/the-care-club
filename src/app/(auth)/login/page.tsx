@@ -48,8 +48,11 @@ export default function LoginPage() {
       .eq("email", user.email?.toLowerCase())
       .single();
 
-    const isAdmin = !profileError && (profileData?.admin === true || profileData?.admin === "true");
-
+const isAdmin = !profileError && (
+  profileData?.admin === true || 
+  profileData?.admin === "true" || 
+  profileData?.admin === "TRUE"
+);
     if (!isAdmin) {
       await supabase.auth.signOut();
       setLoading(false);
