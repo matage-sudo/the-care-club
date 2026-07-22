@@ -5,11 +5,6 @@ import { createBrowserClient } from "@supabase/ssr";
 import { useRouter } from "next/navigation";
 import { Loader2, HeartHandshake, Mail, Lock, AlertCircle } from "lucide-react";
 
-const ADMIN_EMAILS = [
-  "bonifacematage31@gmail.com",
-  "bountymatage@gmail.com",
-];
-
 export default function LoginPage() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -46,7 +41,14 @@ export default function LoginPage() {
       return;
     }
 
-    const isAdmin = ADMIN_EMAILS.includes(user.email?.toLowerCase() ?? "");
+    // Check the profiles table dynamically in Supabase
+    const { data: profileData, error: profileError } = await supabase
+      .from("profiles")
+      .select("admin")
+      .eq("email", user.email?.toLowerCase())
+      .single();
+
+    const isAdmin = !profileError && (profileData?.admin === true || profileData?.admin === "true");
 
     if (!isAdmin) {
       await supabase.auth.signOut();
@@ -145,4 +147,4 @@ export default function LoginPage() {
       </div>
     </div>
   );
-}
+
