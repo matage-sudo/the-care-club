@@ -3,6 +3,7 @@ import { cookies } from 'next/headers';
 import { redirect } from 'next/navigation';
 import Link from 'next/link';
 import { FileText, PlusCircle, Users, Calendar, Heart } from 'lucide-react';
+import BackgroundSlideshow from "@/components/BackgroundSlideshow";
 
 export default async function AdminDashboard() {
   const cookieStore = await cookies();
@@ -50,56 +51,50 @@ export default async function AdminDashboard() {
   ];
 
   return (
-    <div className="p-8 bg-slate-950 min-h-screen text-white">
-      <div className="max-w-7xl mx-auto">
-        <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-8">
-          <div>
-            <h1 className="text-3xl font-black">
-              Welcome, {profile?.username || user.email}
-            </h1>
-            <p className="text-slate-400 text-sm mt-1">Manage community activities, content, and participant records.</p>
-          </div>
+    <main className="relative min-h-screen text-white bg-slate-950">
+      <BackgroundSlideshow />
+      <div className="relative z-10 p-8">
+        <div className="max-w-7xl mx-auto">
+          <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-8">
+            <div>
+              <h1 className="text-3xl font-black">
+                Welcome, {profile?.username || user.email}
+              </h1>
+              <p className="text-slate-400 text-sm mt-1">Manage community activities, content, and participation.</p>
+            </div>
 
-          <div className="flex items-center gap-3">
-            <Link 
-              href="/admin/news/new" 
-              className="bg-rose-600 hover:bg-rose-700 text-white px-5 py-3 rounded-xl font-bold text-sm flex items-center gap-2 transition-all shadow-lg"
-            >
-              <PlusCircle size={18} /> Add New Story
-            </Link>
-          </div>
-        </div>
-
-        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-6 mb-12">
-          {stats.map((s) => {
-            const Icon = s.icon;
-            return (
-              <Link 
-                key={s.label} 
-                href={s.href}
-                className="bg-slate-900 border border-slate-800 p-6 rounded-2xl shadow-xl hover:border-rose-500/50 transition-all group flex flex-col justify-between"
+            <div className="flex items-center gap-3">
+              <Link
+                href="/admin/news/new"
+                className="bg-rose-600 hover:bg-rose-700 text-white px-5 py-3 rounded-xl font-bold text-sm flex items-center gap-2 transition-colors"
               >
-                <div className="flex items-center justify-between mb-4">
-                  <span className="text-slate-400 text-sm font-medium">{s.label}</span>
-                  <div className="p-2.5 bg-slate-950 rounded-xl text-rose-500 group-hover:scale-110 transition-transform">
-                    <Icon size={20} />
-                  </div>
-                </div>
-                <p className="text-3xl font-black text-white">{s.value}</p>
+                <PlusCircle size={18} /> Add New Story
               </Link>
-            );
-          })}
+            </div>
+          </div>
+
+          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-6 mb-12">
+            {stats.map((s) => {
+              const Icon = s.icon;
+              return (
+                <Link
+                  key={s.label}
+                  href={s.href}
+                  className="bg-slate-900/90 backdrop-blur-sm border border-slate-800 p-6 rounded-2xl shadow-xl hover:border-rose-600 transition-all group"
+                >
+                  <div className="flex items-center justify-between mb-4">
+                    <span className="text-slate-400 text-sm font-medium">{s.label}</span>
+                    <div className="p-2.5 bg-slate-950 rounded-xl text-rose-500 group-hover:scale-110 transition-transform">
+                      <Icon size={20} />
+                    </div>
+                  </div>
+                  <p className="text-3xl font-black text-white">{s.value}</p>
+                </Link>
+              );
+            })}
+          </div>
         </div>
       </div>
-    </div>
-import BackgroundSlideshow from "@/components/BackgroundSlideshow";
-
-export default function VolunteerPage() {
-  return (
-    <main>
-      <BackgroundSlideshow />
-      {/* ... the rest of your content ... */}
     </main>
- c21a9136a74421fceec7e454fc2112b0ce5abf31
   );
 }
