@@ -92,7 +92,6 @@ export default async function AdminDashboard() {
         </div>
       </div>
     </div>
-=======
 import BackgroundSlideshow from "@/components/BackgroundSlideshow";
 
 export default function VolunteerPage() {
@@ -101,6 +100,6 @@ export default function VolunteerPage() {
       <BackgroundSlideshow />
       {/* ... the rest of your content ... */}
     </main>
->>>>>>> c21a9136a74421fceec7e454fc2112b0ce5abf31
+ c21a9136a74421fceec7e454fc2112b0ce5abf31
   );
 }
