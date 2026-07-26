@@ -4,6 +4,7 @@ import { redirect } from 'next/navigation';
 import Link from 'next/link';
 import { FileText, PlusCircle, Users, Calendar, Heart } from 'lucide-react';
 import BackgroundSlideshow from "@/components/BackgroundSlideshow";
+import PushNotificationManager from "@/components/PushNotificationManager";
 
 export default async function AdminDashboard() {
   const cookieStore = await cookies();
@@ -63,7 +64,9 @@ export default async function AdminDashboard() {
               <p className="text-slate-400 text-sm mt-1">Manage community activities, content, and participation.</p>
             </div>
 
-            <div className="flex items-center gap-3">
+            <div className="flex items-center gap-3 flex-wrap">
+              <PushNotificationManager />
+              
               <Link
                 href="/admin/news/new"
                 className="bg-rose-600 hover:bg-rose-700 text-white px-5 py-3 rounded-xl font-bold text-sm flex items-center gap-2 transition-colors"
@@ -80,7 +83,7 @@ export default async function AdminDashboard() {
                 <Link
                   key={s.label}
                   href={s.href}
-                  className="bg-slate-900/90 backdrop-blur-sm border border-slate-800 p-6 rounded-2xl shadow-xl hover:border-rose-600 transition-all group"
+                  className="bg-slate-900/90 backdrop-blur-sm border border-slate-800 p-6 rounded-2xl shadow-xl hover:border-rose-500/50 transition-all group"
                 >
                   <div className="flex items-center justify-between mb-4">
                     <span className="text-slate-400 text-sm font-medium">{s.label}</span>

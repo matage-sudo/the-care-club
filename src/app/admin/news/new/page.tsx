@@ -23,7 +23,6 @@ export default function NewNewsAdminPage() {
 
     try {
       let imagePaths: string[] = [];
-
       if (files && files.length > 0) {
         for (let i = 0; i < files.length; i++) {
           const file = files[i];
@@ -54,6 +53,20 @@ export default function NewNewsAdminPage() {
 
       if (insertError) throw insertError;
 
+      // Trigger push notification to all admins via API route
+      try {
+        await fetch('/api/push/send', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            title: 'New Story Published! 📢',
+            body: `A new story titled "${title}" has just been published on The Care Club.`,
+          }),
+        });
+      } catch (pushErr) {
+        console.error('Failed to trigger push broadcast:', pushErr);
+      }
+
       router.push('/admin');
     } catch (err: any) {
       setErrorMsg(err.message || 'Something went wrong while publishing.');
@@ -65,12 +78,12 @@ export default function NewNewsAdminPage() {
   return (
     <main className="min-h-screen bg-slate-950 text-white py-12 px-6">
       <div className="max-w-2xl mx-auto bg-slate-900 border border-slate-800 rounded-3xl p-8 shadow-2xl">
-        <Link href="/admin" className="text-slate-400 hover:text-white flex items-center gap-2 mb-6 text-sm font-medium">
+        <Link href="/admin" className="text-slate-400 hover:text-white flex items-center gap-2 mb-6 text-sm">
           <ArrowLeft size={16} /> Back to Dashboard
         </Link>
 
         <h1 className="text-3xl font-black mb-2 text-white">Add New Story / Update</h1>
-        <p className="text-slate-400 text-sm mb-8">Publish multiple pictures, videos, and comments for community events visible to clients.</p>
+        <p className="text-slate-400 text-sm mb-8">Publish multiple pictures, videos, and comments for community updates.</p>
 
         {errorMsg && (
           <div className="bg-rose-500/10 border border-rose-500/20 text-rose-400 p-4 rounded-xl mb-6 text-sm">
@@ -89,7 +102,7 @@ export default function NewNewsAdminPage() {
               value={title}
               onChange={(e) => setTitle(e.target.value)}
               placeholder="e.g. Juja Community Outreach"
-              className="w-full bg-slate-950 border border-slate-800 rounded-xl px-4 py-3 text-white focus:outline-none focus:border-rose-500 transition-colors"
+              className="w-full bg-slate-950 border border-slate-800 rounded-xl px-4 py-3 text-white focus:outline-none focus:border-rose-500"
             />
           </div>
 
@@ -103,10 +116,9 @@ export default function NewNewsAdminPage() {
                 required
                 value={eventDate}
                 onChange={(e) => setEventDate(e.target.value)}
-                className="w-full bg-slate-950 border border-slate-800 rounded-xl px-4 py-3 text-white focus:outline-none focus:border-rose-500 transition-colors"
+                className="w-full bg-slate-950 border border-slate-800 rounded-xl px-4 py-3 text-white focus:outline-none focus:border-rose-500"
               />
             </div>
-
             <div>
               <label className="block text-xs font-semibold uppercase tracking-wider text-slate-300 mb-2 flex items-center gap-2">
                 <MapPin size={14} className="text-rose-500" /> Location / Place
@@ -117,7 +129,7 @@ export default function NewNewsAdminPage() {
                 value={place}
                 onChange={(e) => setPlace(e.target.value)}
                 placeholder="e.g. Nairobi, Kenya"
-                className="w-full bg-slate-950 border border-slate-800 rounded-xl px-4 py-3 text-white focus:outline-none focus:border-rose-500 transition-colors"
+                className="w-full bg-slate-950 border border-slate-800 rounded-xl px-4 py-3 text-white focus:outline-none focus:border-rose-500"
               />
             </div>
           </div>
@@ -131,7 +143,7 @@ export default function NewNewsAdminPage() {
               multiple
               accept="image/*,video/*"
               onChange={(e) => setFiles(e.target.files)}
-              className="w-full bg-slate-950 border border-slate-800 rounded-xl px-4 py-3 text-slate-400 file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border-0 file:text-sm file:font-semibold file:bg-rose-600 file:text-white hover:file:bg-rose-700 transition-all cursor-pointer"
+              className="w-full bg-slate-950 border border-slate-800 rounded-xl px-4 py-3 text-slate-400 file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border-0 file:text-sm file:font-semibold file:bg-rose-600 file:text-white hover:file:bg-rose-700"
             />
           </div>
 
@@ -145,14 +157,14 @@ export default function NewNewsAdminPage() {
               value={content}
               onChange={(e) => setContent(e.target.value)}
               placeholder="Share details, remarks, or highlights about how the event went..."
-              className="w-full bg-slate-950 border border-slate-800 rounded-xl px-4 py-3 text-white focus:outline-none focus:border-rose-500 transition-colors"
+              className="w-full bg-slate-950 border border-slate-800 rounded-xl px-4 py-3 text-white focus:outline-none focus:border-rose-500"
             />
           </div>
 
           <button
             type="submit"
             disabled={loading}
-            className="w-full bg-rose-600 hover:bg-rose-700 text-white font-bold py-4 rounded-xl transition-all shadow-lg flex items-center justify-center gap-2 disabled:opacity-50"
+            className="w-full bg-rose-600 hover:bg-rose-700 text-white font-bold py-4 rounded-xl transition-colors shadow-lg cursor-pointer"
           >
             {loading ? 'Publishing...' : 'Publish to Stories'}
           </button>
