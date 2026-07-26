@@ -8,6 +8,7 @@ const inter = Inter({ subsets: ["latin"] });
 export const metadata: Metadata = {
   title: "The Care Club",
   description: "Empowering communities and spreading hope, one act at a time.",
+  manifest: "/manifest.json",
 };
 
 export default function RootLayout({
