@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 import { createServerClient } from '@supabase/ssr';
 import { cookies } from 'next/headers';
 import { redirect } from 'next/navigation';
@@ -92,5 +93,15 @@ export default async function AdminDashboard() {
         </div>
       </div>
     </div>
+=======
+import BackgroundSlideshow from "@/components/BackgroundSlideshow";
+
+export default function VolunteerPage() {
+  return (
+    <main>
+      <BackgroundSlideshow />
+      {/* ... the rest of your content ... */}
+    </main>
+>>>>>>> c21a9136a74421fceec7e454fc2112b0ce5abf31
   );
 }
