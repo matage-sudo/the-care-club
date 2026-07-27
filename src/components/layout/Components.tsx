@@ -130,7 +130,7 @@ export function Footer() {
               <Link href="https://facebook.com" target="_blank" rel="noopener noreferrer" className="hover:text-rose-500 transition">
                 <Facebook size={22} />
               </Link>
-              <Link href="https://www.instagram.com/its_thecareclub" target="_blank" rel="noopener noreferrer" className="hover:text-rose-500 transition flex items-center gap-1">
+              <Link href="https://www.instagram.com/its_thecareclub?utm_source=ig_web_button_share_sheet&igsh=ZDNlZDc0MzIxNw==" target="_blank" rel="noopener noreferrer" className="hover:text-rose-500 transition flex items-center gap-1">
                 <Instagram size={22} />
               </Link>
               <Link href="https://tiktok.com/@thecareclub23" target="_blank" rel="noopener noreferrer" className="hover:text-rose-500 transition flex items-center gap-1">
