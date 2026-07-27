@@ -25,7 +25,7 @@ export function Navbar() {
     <nav className="sticky top-0 z-50 w-full bg-white/85 backdrop-blur-md border-b border-slate-200">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex justify-between items-center h-20">
-          {/* Logo Section */}
+         {/* Logo Section */}
           <Link href="/" className="flex items-center">
             <Image
               src="/images/logo.png"
@@ -52,7 +52,7 @@ export function Navbar() {
                 {route.label}
               </Link>
             ))}
-          </div>
+      </div>
 
           {/* Mobile Menu Toggle Button */}
           <button
@@ -79,7 +79,7 @@ export function Navbar() {
               )}
             >
               {route.label}
-            </Link>
+       </Link>
           ))}
         </div>
       )}
@@ -90,7 +90,7 @@ export function Navbar() {
 export function Footer() {
   return (
     <footer className="bg-slate-950 text-white py-12 md:py-16">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-8 md:gap-8">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-8">
 
         {/* 1. Branding & Logo */}
         <div className="space-y-4">
@@ -127,13 +127,13 @@ export function Footer() {
           <div>
             <h4 className="font-bold mb-2 text-white">Follow Us</h4>
             <div className="flex flex-wrap gap-4 items-center pt-1">
-              <Link href="https://facebook.com" target="_blank" rel="noopener noreferrer" className="hover:text-rose-500 text-slate-400 transition">
+              <Link href="https://facebook.com" target="_blank" rel="noopener noreferrer" className="hover:text-rose-500 transition">
                 <Facebook size={22} />
               </Link>
-              <Link href="https://www.instagram.com/its_thecareclub" target="_blank" rel="noopener noreferrer" className="hover:text-rose-500 text-slate-400 transition">
+              <Link href="https://www.instagram.com/its_thecareclub" target="_blank" rel="noopener noreferrer" className="hover:text-rose-500 transition flex items-center gap-1">
                 <Instagram size={22} />
               </Link>
-              <Link href="https://tiktok.com/@thecareclub23" target="_blank" rel="noopener noreferrer" className="flex items-center gap-1.5 hover:text-rose-500 text-slate-400 transition">
+              <Link href="https://tiktok.com/@thecareclub23" target="_blank" rel="noopener noreferrer" className="hover:text-rose-500 transition flex items-center gap-1">
                 <Music size={22} />
                 <span className="text-sm font-medium">The Care Club</span>
               </Link>
